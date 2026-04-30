@@ -1,3 +1,10 @@
+import os
+from langchain.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_postgres import PGVector
+from dotenv import load_dotenv
+load_dotenv()
+
 PROMPT_TEMPLATE = """
 CONTEXTO:
 {contexto}
@@ -26,4 +33,30 @@ RESPONDA A "PERGUNTA DO USUÁRIO"
 """
 
 def search_prompt(question=None):
-    pass
+    if question is None:
+        return None
+
+    chat_prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+
+    embeddings = GoogleGenerativeAIEmbeddings(model=os.getenv("GOOGLE_EMBEDDING_MODEL", "models/embedding-001"))
+
+    store = PGVector(
+        embeddings=embeddings,
+        collection_name=os.getenv("PGVECTOR_COLLECTION"),
+        connection=os.getenv("PGVECTOR_URL"),
+        use_jsonb=True,
+    )
+
+    results = store.similarity_search_with_score(question, k=10)
+    contexto = "\n\n".join(doc.page_content for doc, _score in results)
+
+    messages = chat_prompt.format_messages(contexto=contexto, pergunta=question)
+
+    model = ChatGoogleGenerativeAI(model=os.getenv("GOOGLE_MODEL", "gemini-1.5-flash"), temperature=0.5)
+
+    result = model.invoke(messages)
+    return result.content
+
+
+if __name__ == "__main__":
+    search_prompt("Qual é a empresa que possui o maior faturamento?")
