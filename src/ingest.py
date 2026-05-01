@@ -65,6 +65,3 @@ for i in range(0, len(enriched), batch_size):
 
 def ingest_pdf():
     pass
-
-if __name__ == "__main__":
-    ingest_pdf()
