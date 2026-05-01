@@ -38,7 +38,7 @@ def search_prompt(question=None):
 
     chat_prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
 
-    embeddings = GoogleGenerativeAIEmbeddings(model=os.getenv("GOOGLE_EMBEDDING_MODEL", "models/embedding-001"))
+    embeddings = GoogleGenerativeAIEmbeddings(model=os.getenv("GOOGLE_EMBEDDING_MODEL", "models/gemini-embedding-001"))
 
     store = PGVector(
         embeddings=embeddings,
@@ -52,11 +52,7 @@ def search_prompt(question=None):
 
     messages = chat_prompt.format_messages(contexto=contexto, pergunta=question)
 
-    model = ChatGoogleGenerativeAI(model=os.getenv("GOOGLE_MODEL", "gemini-1.5-flash"), temperature=0.5)
+    model = ChatGoogleGenerativeAI(model=os.getenv("GOOGLE_MODEL", "models/gemini-2.5-flash-lite"), temperature=0.5)
 
     result = model.invoke(messages)
     return result.content
-
-
-if __name__ == "__main__":
-    search_prompt("Qual é a empresa que possui o maior faturamento?")
