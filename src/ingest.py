@@ -10,7 +10,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_postgres import PGVector
 
 load_dotenv()
-for k in ("PGVECTOR_URL", "PGVECTOR_COLLECTION"):
+for k in ("DATABASE_URL", "PG_VECTOR_COLLECTION_NAME"):
     if not os.getenv(k):
         raise RuntimeError(f"Environment variable {k} is not set")
 
@@ -42,8 +42,8 @@ embeddings = GoogleGenerativeAIEmbeddings(
 
 store = PGVector(
     embeddings=embeddings,
-    collection_name=os.getenv("PGVECTOR_COLLECTION"),
-    connection=os.getenv("PGVECTOR_URL"),
+    collection_name=os.getenv("PG_VECTOR_COLLECTION_NAME"),
+    connection=os.getenv("DATABASE_URL"),
     use_jsonb=True,
 )
 

@@ -42,8 +42,8 @@ def search_prompt(question=None):
 
     store = PGVector(
         embeddings=embeddings,
-        collection_name=os.getenv("PGVECTOR_COLLECTION"),
-        connection=os.getenv("PGVECTOR_URL"),
+        collection_name=os.getenv("PG_VECTOR_COLLECTION_NAME"),
+        connection=os.getenv("DATABASE_URL"),
         use_jsonb=True,
     )
 

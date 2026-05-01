@@ -18,24 +18,34 @@ pip install -r requirements.txt
 docker compose up -d
 ```
 
-3. Configure o arquivo `.env` com os valores necessarios para ingestao:
+3. Copie o arquivo `.env.example` para `.env` e preencha as variáveis necessárias conforme seu ambiente:
 
-```env
-GOOGLE_API_KEY=...
-GOOGLE_EMBEDDING_MODEL=models/gemini-embedding-001
-PGVECTOR_URL=postgresql+psycopg://postgres:postgres@localhost:5432/rag
-PGVECTOR_COLLECTION=document_collection
-PDF_PATH=.
-INGEST_BATCH_SIZE=2
-INGEST_BATCH_PAUSE_SECONDS=15
+```bash
+cp .env.example .env
 ```
+
+Edite o arquivo `.env` com seus dados (chaves de API, caminhos, etc).
 
 Observacoes:
 - O script espera um arquivo `document.pdf` dentro de `PDF_PATH`.
-- Atualmente o `src/ingest.py` usa `PGVECTOR_URL` e `PGVECTOR_COLLECTION`.
+- Atualmente o `src/ingest.py` usa `DATABASE_URL` e `PG_VECTOR_COLLECTION_NAME`.
 
 4. Execute a ingestao:
 
 ```bash
 python src/ingest.py
+```
+
+Tempo de execução observado: 8m51,575s
+
+Informações do hardware utilizado para este teste:
+- CPU: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 threads)
+- Memória RAM: 15 GiB
+- Armazenamento: SSD NVMe, 234 GB total, 42 GB livres
+- Sistema operacional: Linux x86_64
+
+5. Execute o chat para perguntar e obter respostas referentes aos dados do document.pdf:
+
+```bash
+python src/chat.py
 ```
